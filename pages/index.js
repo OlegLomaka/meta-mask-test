@@ -1,15 +1,32 @@
 import Head from 'next/head'
 import { useCallback, useState } from 'react';
-import { getBalance } from './hooks/getBalance';
+import Web3 from "web3";
 
 export default function Home() {
   const [webProvider, setWebProvider] = useState(null);
   const [error, setError] = useState('');
   const [balance, setBalance] = useState('');
 
+  const getBalance = async () => {
+ 
+  if (typeof window.ethereum !== 'undefined') {
+      try {
+        const accounts = await ethereum.request({ method: "eth_requestAccounts" })
+        let web3 = new Web3(ethereum)
+        setWebProvider(web3)
+        const balance = await web3?.eth?.getBalance(accounts[0])
+        setBalance(balance);
+      } catch (err) {
+        console.log(err)
+      }
+    } else {
+      setError("Please install MetaMask")
+    }
+  };
+
   const onClick = useCallback(() => {
 
-    getBalance(setWebProvider,setError,setBalance)
+    getBalance()
 
   }, []);
 
